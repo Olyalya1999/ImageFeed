@@ -60,7 +60,7 @@ final class ProfileViewController:UIViewController {
         userNickname.leadingAnchor.constraint(equalTo: userName.safeAreaLayoutGuide.leadingAnchor).isActive = true
         
         let userInformation = UILabel()
-        userInformation.text = "Hello,world!"
+        userInformation.text = "Hello, world!"
         userInformation.textColor = UIColor(named: "YP White")
         userInformation.font = nickFont
         view.addSubview(userInformation)
