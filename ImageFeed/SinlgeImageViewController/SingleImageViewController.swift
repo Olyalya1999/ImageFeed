@@ -28,7 +28,7 @@ final class SingleImageViewController: UIViewController{
         rescaleAndCenterImageInScrollView(image: image)
     }
     
-    @IBAction func didTapBackButton(_ Sender:Any) {
+    @IBAction private func didTapBackButton(_ Sender:Any) {
         dismiss(animated: true, completion: nil)
     }
         
