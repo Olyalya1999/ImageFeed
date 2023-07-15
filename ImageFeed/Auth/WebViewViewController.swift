@@ -16,16 +16,16 @@ protocol WebViewViewControllerDelegate: AnyObject {
 }
 
 final class WebViewViewController: UIViewController {
+    private var estimatedProgressObservation: NSKeyValueObservation?
     weak var delegate: WebViewViewControllerDelegate?
-    
     @IBOutlet private var progressView: UIProgressView!
     @IBOutlet private var webView: WKWebView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         webView.navigationDelegate = self
-        
+
         var urlComponents = URLComponents(string: UnsplashAuthorizeURLString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: AccessKey),
@@ -34,10 +34,10 @@ final class WebViewViewController: UIViewController {
             URLQueryItem(name: "scope", value: AccessScope)
         ]
         let url = urlComponents.url!
-        
+
         let request = URLRequest(url: url)
         webView.load(request)
-        
+
         updateProgress()
     }
     
