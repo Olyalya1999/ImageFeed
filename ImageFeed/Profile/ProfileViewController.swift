@@ -10,13 +10,14 @@ import Kingfisher
 
 
 final class ProfileViewController:UIViewController {
-    private var userInformation: UILabel!
-    private var userNickname: UILabel!
-    private var userName: UILabel!
+    private var userInformation = UILabel()
+    private var userNickname = UILabel()
+    private var userName = UILabel()
+    private var logOutButton = UIButton()
     private let profileService = ProfileService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     
-    private func informationScreen(view:UIView){
+    private func informationScreen(){
         let profileImage = UIImage(named: "Photo")
         let imageView = UIImageView(image:profileImage)
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -24,18 +25,19 @@ final class ProfileViewController:UIViewController {
         imageView.tag = 1
         view.addSubview(imageView)
         
+        imageView.layer.cornerRadius = 35
+        imageView.clipsToBounds = true
         imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant:40).isActive = true
         imageView.leadingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.leadingAnchor,constant:16).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 70).isActive = true
     }
     
-    private func LogOutButton(view:UIView){
-        let logOutButton = UIButton.systemButton(
+    private func  logoutButton(){
+       logOutButton = UIButton.systemButton(
             with: UIImage(named: "ipad.and.arrow.forward")!,
             target: self,
-            action: #selector(Self.didTapLogOutButton)
-        )
+            action: #selector(didTapLogOutButton))
         
         logOutButton.tintColor = UIColor(named:"YP Red")
         view.addSubview(logOutButton)
@@ -46,7 +48,7 @@ final class ProfileViewController:UIViewController {
         logOutButton.heightAnchor.constraint(equalToConstant: 22).isActive = true
     }
     
-    private func UserInformation(view:UIView){
+    private func UserInformation(){
         userName = UILabel()
         userName.text = "Екатерина Новикова"
         userName.textColor = UIColor(named: "YP White")
@@ -81,16 +83,19 @@ final class ProfileViewController:UIViewController {
     }
     
     private func updateProfileDetails (profile: Profile) {
-        userInformation.text = profile.bio 
-        userNickname.text = profile.loginName
-        userName.text = profile.name
+        userInformation.text = profileService.profile?.bio
+        userNickname.text = profileService.profile?.loginName
+        userName.text = profileService.profile?.name
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        informationScreen(view: view)
-        LogOutButton(view: view)
-        UserInformation(view: view)
+        
+        view.backgroundColor = UIColor(named: "YP Black")
+        
+        informationScreen()
+        logoutButton()
+        UserInformation()
         
         updateProfileDetails(profile: profileService.profile!)
         profileImageServiceObserver = NotificationCenter.default.addObserver(
@@ -130,22 +135,35 @@ final class ProfileViewController:UIViewController {
         
     }
     
+    private func switchToSplashViewController() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first else {
+            fatalError("Invalid Configuration")
+        }
+        
+        let splashViewController = SplashViewController()
+        splashViewController.logOut = "logut"
+        window.rootViewController = splashViewController
+    }
     
     @objc
     private func didTapLogOutButton(){
-        let tokenStorage = OAuth2TokenStorage.shared
-        tokenStorage.removeToken()
-        for view in view.subviews {
-            if view is UILabel {
-                view.removeFromSuperview()
-            } else {
-                if let imageView = view as? UIImageView {
-                    imageView.image = UIImage(named: "ProfilePhotoPlaceholder")
-                    imageView.tintColor = UIColor(named: "YP Gray")
-                }
+        let alertController = UIAlertController(title: " Хотите выйти?", message: "Чтобы просматривать фото,нужно будет авторизироваться" , preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Да", style: .default) { [weak self] _ in
+            guard let self else {
+                return
             }
-        }
-        present(SplashViewController(), animated: true, completion: nil)
-        
+            
+            self.profileService.clean()
+            
+            self.updateAvatar()
+            self.userName = UILabel()
+            self.userNickname = UILabel()
+            self.userInformation = UILabel()
+            self.logOutButton = UIButton()
+            
+            self.switchToSplashViewController()
+        })
+        alertController.addAction(UIAlertAction(title: "Нет", style: .cancel))
+        present(alertController, animated: true)
     }
 }

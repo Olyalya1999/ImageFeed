@@ -8,7 +8,7 @@ import Foundation
 import WebKit
 
 final class ProfileService {
-   
+    
     static let shared = ProfileService()
     private var activeSessionTask: URLSessionTask?
     private(set) var profile: Profile?
@@ -26,9 +26,9 @@ final class ProfileService {
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         assert(Thread.isMainThread)
         activeSessionTask?.cancel()
-
+        
         let request = makeRequest(with: token)
-
+        
         loadObject(for: request) { [weak self] result in
             switch result {
             case .success(let profileResult):
@@ -40,18 +40,18 @@ final class ProfileService {
             }
         }
     }
-
+    
     // MARK: - Private methods
     private func loadObject(for request: URLRequest, completion: @escaping (Result<ProfileResult, Error>) -> Void) {
         let dataTask = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             completion(result)
             self?.activeSessionTask = nil
         }
-
+        
         activeSessionTask = dataTask
         dataTask.resume()
     }
-
+    
     private func makeRequest(with token: String) -> URLRequest {
         var request = URLRequest(url: URL(string: "https://api.unsplash.com/me")!)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

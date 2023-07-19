@@ -24,50 +24,47 @@ final class OAuth2Service {
     }
     
     func fetchOAuthToken(
-        _ code: String,
-        completion: @escaping (Result<String, Error>) -> Void
-    ) {
-        assert(Thread.isMainThread)
-        if lastCode == code {return}
-        task?.cancel()
-        lastCode = code
-        let request = authTokenRequest(code: code)
-        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                switch result {
-                case .success(let body):
-                    let authToken = body.accessToken
-                    self.authToken = authToken
-                    completion(.success(authToken))
-                    self.task = nil
-                case .failure(let error):
-                    completion(.failure(error))
-                    self.lastCode = nil
+            _ code: String,
+            completion: @escaping (Result<String, Error>) -> Void
+        ) {
+            assert(Thread.isMainThread)
+            if lastCode == code {return}
+            task?.cancel()
+            lastCode = code
+            let request = authTokenRequest(code: code)
+            let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let body):
+                        let authToken = body.accessToken
+                        self.authToken = authToken
+                        completion(.success(authToken))
+                        self.task = nil
+                    case .failure(let error):
+                        completion(.failure(error))
+                        self.lastCode = nil
+                    }
                 }
             }
+            self.task = task
+            task.resume()
         }
-        self.task = task
-        task.resume()
     }
     
-}
+    private func authTokenRequest(code: String) -> URLRequest {
+        var urlComponents = URLComponents(string: "https://unsplash.com/oauth/token")!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "client_id", value:  AccessKey),
+            URLQueryItem(name: "client_secret", value: SecretKey),
+            URLQueryItem(name: "redirect_uri", value: RedirectURI),
+            URLQueryItem(name: "code", value: code),
+            URLQueryItem(name: "grant_type", value: "authorization_code")
+        ]
+        
+        var request = URLRequest(url: urlComponents.url!)
+        request.httpMethod = "POST"
+        
+        return request
+    }
 
-private func authTokenRequest(code: String) -> URLRequest {
-    return URLRequest.makeHTTPRequest(
-        path: "/oauth/token"
-        + "?client_id=\(AccessKey)"
-        + "&client_secret=\(SecretKey)"
-        + "&redirect_uri=\(RedirectURI)"
-        + "&code=\(code)"
-        + "&grant_type=authorization_code",
-        httpMethod: "POST",
-        baseURL: URL(string: "https://unsplash.com")!
-    )
-}
-
-enum NetworkError: Error {
-    case httpStatusCode(Int)
-    case urlRequestError(Error)
-    case urlSessionError
-}

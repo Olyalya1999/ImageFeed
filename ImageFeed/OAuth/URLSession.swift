@@ -62,7 +62,7 @@ extension URLRequest {
             request.url = components.url
         }
         
-       
+        
         if (needToken) {
             guard let authToken = OAuth2TokenStorage().token else {
                 return request
@@ -72,5 +72,13 @@ extension URLRequest {
         
         
         return request
+    }
+}
+
+extension URLSession {
+    enum NetworkError: Error {
+        case httpStatusCode(Int)
+        case urlRequestError(Error)
+        case urlSessionError
     }
 }

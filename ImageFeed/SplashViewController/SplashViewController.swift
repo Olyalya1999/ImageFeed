@@ -14,6 +14,12 @@ final class SplashViewController: UIViewController {
 
     private let oauth2Service = OAuth2Service()
     private let profileService = ProfileService.shared
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        showViewController()
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -22,6 +28,7 @@ final class SplashViewController: UIViewController {
             fetchProfile(with: token)
             switchToTabBarController()
         } else {
+            UIBlockingProgressHUD.dismiss()
             guard let authViewController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
                 assertionFailure("Failed to show Authentication Screen")
                 return
@@ -31,11 +38,6 @@ final class SplashViewController: UIViewController {
             authViewController.modalPresentationStyle = .fullScreen
             present(authViewController, animated: true)
         }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        viewController()
     }
     
     private func switchToTabBarController() {
@@ -48,11 +50,11 @@ final class SplashViewController: UIViewController {
     }
 
     private func fetchProfile(with token: String) {
-        profileService.fetchProfile(token) {result in
+        profileService.fetchProfile(token) { [weak self] result in
             switch result {
             case .success(let profile):
                 UIBlockingProgressHUD.dismiss()
-                self.switchToTabBarController()
+                self?.switchToTabBarController()
 
                 ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { [weak self] result in
                     switch result {
@@ -64,7 +66,7 @@ final class SplashViewController: UIViewController {
                 }
             case .failure(_):
                 UIBlockingProgressHUD.dismiss()
-                self.showAlert(title: "Что-то пошло не так.", message: "Не удалось войти в систему")
+                self?.showAlert(title: "Что-то пошло не так.", message: "Не удалось войти в систему")
             }
         }
     }
@@ -75,7 +77,7 @@ final class SplashViewController: UIViewController {
         present(alertController, animated: true)
     }
 
-    private func viewController() {
+    private func showViewController() {
         view.backgroundColor = UIColor(named: "YP Black")
         
         if logOut != nil {

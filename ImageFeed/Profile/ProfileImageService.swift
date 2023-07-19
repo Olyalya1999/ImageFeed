@@ -24,10 +24,10 @@ final class ProfileImageService {
             task?.cancel()
         }
         
-    var profilePhotoRequest: URLRequest {
+        var profilePhotoRequest: URLRequest {
             URLRequest.makeHTTPRequest(path: "/users/\(username)", httpMethod: "GET", needToken: true)
         }
-    let task = urlSession.objectTask(for: profilePhotoRequest) { [weak self] (result: Result<UserResult, Error>) in
+        let task = urlSession.objectTask(for: profilePhotoRequest) { [weak self] (result: Result<UserResult, Error>) in
             DispatchQueue.main.async {
                 
                 guard let self = self else { return }

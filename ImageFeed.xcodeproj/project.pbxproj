@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F19A0322A659A9200D3C6F9 /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F19A0312A659A9200D3C6F9 /* AlertPresenter.swift */; };
 		0F2029F62A437E89001EE9E3 /* ProfileResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2029F52A437E89001EE9E3 /* ProfileResult.swift */; };
 		0F2029F82A437EC5001EE9E3 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2029F72A437EC5001EE9E3 /* Profile.swift */; };
 		0F2029FC2A4382EA001EE9E3 /* ProfileImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2029FB2A4382EA001EE9E3 /* ProfileImageService.swift */; };
@@ -39,6 +40,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0F19A0312A659A9200D3C6F9 /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
 		0F2029F52A437E89001EE9E3 /* ProfileResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileResult.swift; sourceTree = "<group>"; };
 		0F2029F72A437EC5001EE9E3 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		0F2029FB2A4382EA001EE9E3 /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
@@ -83,6 +85,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0F19A0302A659A7100D3C6F9 /*  AlertPresenter */ = {
+			isa = PBXGroup;
+			children = (
+				0F19A0312A659A9200D3C6F9 /* AlertPresenter.swift */,
+			);
+			path = " AlertPresenter";
+			sourceTree = "<group>";
+		};
 		0F521B762A02B9EB00E2ADFB /* ImagesList */ = {
 			isa = PBXGroup;
 			children = (
@@ -95,6 +105,7 @@
 		0F68004129FD5D2E008F4015 = {
 			isa = PBXGroup;
 			children = (
+				0F19A0302A659A7100D3C6F9 /*  AlertPresenter */,
 				0FBF58392A4E2E73008282D5 /* Struct */,
 				0F68004C29FD5D2E008F4015 /* ImageFeed */,
 				0F68004B29FD5D2E008F4015 /* Products */,
@@ -293,6 +304,7 @@
 				0F52CE622A364D3600B20AAB /* ProfileService.swift in Sources */,
 				0FBF584D2A4F8CF7008282D5 /* AlertModel.swift in Sources */,
 				0FBF583B2A4E2EC8008282D5 /* UserResult.swift in Sources */,
+				0F19A0322A659A9200D3C6F9 /* AlertPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
